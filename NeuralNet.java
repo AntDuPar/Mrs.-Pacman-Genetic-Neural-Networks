@@ -44,7 +44,8 @@ public class NeuralNet {
 		for(int i = 0; i < numHiddenLay+1; i++) {
 			for(int j = 0; j < neuralLayers.get(i).numNeurons; ++j) {
 				for(int k = 0; k < neuralLayers.get(i).nodeList.get(j).inputs; ++k) {
-					neuralLayers.get(i).nodeList.get(j).weights.set(k, weights.get(weightI++));
+					neuralLayers.get(i).nodeList.get(j).weights.set(k, weights.get(weightI));
+					weightI++;
 				}
 			}
 		}
@@ -87,8 +88,7 @@ public class NeuralNet {
 				}
 				//add the bias (might need to change later)
 				netinput += neuralLayers.get(i).nodeList.get(j).weights.get(numInputsA-1) * bias;
-				
-				outputs.add((float) (1 / (1 + Math.exp(-netinput/1))));
+				outputs.add((float) (1 / (1 + Math.exp(-netinput/0.5f))));
 				weightI = 0;
 			}
 		}

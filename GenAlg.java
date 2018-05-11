@@ -125,21 +125,20 @@ public class GenAlg {
 			NeuralNet tmpNet1 = new NeuralNet();
 			tmpNet1.numInputs = 11;
 			tmpNet1.numOutputs = 4;
-			tmpNet1.numHiddenLay = 4;
-			tmpNet1.neuronsPerHidden = 15;
+			tmpNet1.numHiddenLay = 1;
+			tmpNet1.neuronsPerHidden = 5;
 			tmpNet1.createNet();
 			NeuralNet tmpNet2= new NeuralNet();
 			tmpNet2.numInputs = 11;
 			tmpNet2.numOutputs = 4;
-			tmpNet2.numHiddenLay = 4;
-			tmpNet2.neuronsPerHidden = 15;
+			tmpNet2.numHiddenLay = 1;
+			tmpNet2.neuronsPerHidden = 5;
 			tmpNet2.createNet();
 			int roulette = rand.nextInt(totalFitness-1)+1;
 			int spot1 = -1;
 			int spot2 = -1;
 			int tmpX = 0;
 			//Roulette selection, get the first net
-			//System.out.println("FITNESS SIZE = " + fitnesses.size());
 			for(int k = 0; k < fitnesses.size(); k++) {
 				if(roulette <= fitnesses.get(k)+tmpX && roulette >= tmpX) {
 					spot1 = k;
@@ -161,7 +160,7 @@ public class GenAlg {
 				//Uniform Crossover to make the children
 				for(int l = 0; l < weights1.size(); l++) {
 					float corss = rand.nextFloat();
-					int mutateR = rand.nextInt(750);
+					int mutateR = rand.nextInt(10000);
 					if(corss >= 0.5) {
 						weights1.set(l, weights2.get(l));
 					}
@@ -171,8 +170,8 @@ public class GenAlg {
 					if(mutateR <= 10) {
 						float r = rand.nextFloat() - rand.nextFloat();
 						weights1.set(l, r);
-						r = rand.nextFloat() - rand.nextFloat();
-						weights2.set(l, r);
+						//r = rand.nextFloat() - rand.nextFloat();
+						//weights2.set(l, r);
 					}
 				}
 			}
@@ -199,7 +198,7 @@ public class GenAlg {
 		nets.addAll(newNets);
 	}
 	
-	static int highestSpot = 0;
+	static int highestSpot = -1;
 	static int average = 0;
 	
 	public static void main(String[] args) {
@@ -228,19 +227,19 @@ public class GenAlg {
 					NeuralNet tmpNet = new NeuralNet();
 					tmpNet.numInputs = 11;
 					tmpNet.numOutputs = 4;
-					tmpNet.numHiddenLay = 4;
-					tmpNet.neuronsPerHidden = 15;
+					tmpNet.numHiddenLay = 1;
+					tmpNet.neuronsPerHidden = 5;
 					tmpNet.createNet();
 					weights.addAll(tmpNet.getWeights());
 					nets.add(tmpNet);
-					SwingUtilities.invokeLater(new Runnable() {
-				         public void run() {
-				        	 numNets.setText("   # Of Nets = " + nets.size());
-				        	 f.repaint();
-				        	 f.revalidate();
-				         }
-					});
 				}
+				SwingUtilities.invokeLater(new Runnable() {
+			         public void run() {
+			        	 numNets.setText("   # Of Nets = " + nets.size());
+			        	 f.repaint();
+			        	 f.revalidate();
+			         }
+				});
 			}
 		});
 		firstGenB.setBounds(10, 10, 175, 50);
@@ -314,7 +313,7 @@ public class GenAlg {
 				    public MyRunnable() {
 				    }
 				    public void run() {
-				    	doGeneration(1000, f, generationNum, true);
+				    	doGeneration(50000, f, generationNum, true);
 				    }
 				}
 				stop = false;

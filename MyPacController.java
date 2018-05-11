@@ -24,26 +24,27 @@ public class MyPacController extends PacManHijackController{
 	public void tick(Game game, long timeDue) {
 		makeInputs(game);
 		ArrayList<Float> outputs = myNet.update(inputs);
+		//System.out.println(outputs);
+		
 		myNet.fitness = (game.getNumberPills() + game.getNumberPowerPills()) - (game.getNumActivePills() + game.getNumActivePowerPills()) + numPPrev;
 		if(game.getCurLevel() > curLev) {
 			numPPrev += tmpP;
 			curLev = game.getCurLevel();
 		}
 		tmpP = (game.getNumberPills() + game.getNumberPowerPills()) - (game.getNumActivePills() + game.getNumActivePowerPills());
+		
 		//myNet.fitness = game.getScore();
 		//if(game.getCurLevel() > 1) {
 		//	myNet.fitness += game.getCurLevel() * 500;
 		//}
 		int highestSpot = -1;
-		float highest = 0;
-		int[] adj = game.getPacManNeighbours();
-		//Find the highest legal move
+		float highest = -1;
+		//int[] adj = game.getPacManNeighbours();
+		//Find the highest move
 		for(int i = 0; i < outputs.size(); i++) {
-			if(adj[i] != -1) {
-				if(outputs.get(i) > highest) {
-					highest = outputs.get(i);
-					highestSpot = i;
-				}
+			if(outputs.get(i) > highest) {
+				highest = outputs.get(i);
+				highestSpot = i;
 			}
 		}
 		if(highestSpot == 0) {
@@ -70,15 +71,18 @@ public class MyPacController extends PacManHijackController{
 				System.out.println("LEFT");
 			}
 		}
+		if(highestSpot == -1) {
+			System.out.println("AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
+		}
 	} 
 	
-	void makeNet() {
+	/*void makeNet() {
 		myNet.numInputs = 11;
 		myNet.numOutputs = 4;
 		myNet.numHiddenLay = 4;
 		myNet.neuronsPerHidden = 15;
 		myNet.createNet();
-	}
+	}*/
 	
 	public void makeInputs(Game game) {
 		inputs.clear();
@@ -111,7 +115,7 @@ public class MyPacController extends PacManHijackController{
 			distGhost = dist3;
 		}
 		if(distGhost <= 0) {
-			inputs.add(0.5f);
+			inputs.add(1f);
 		}
 		if(distGhost >= 0) {
 			inputs.add(1/(float)distGhost);
@@ -126,7 +130,7 @@ public class MyPacController extends PacManHijackController{
 			}
 		}
 		if(distPill <= 0) {
-			inputs.add(0.5f);
+			inputs.add(1f);
 		}
 		if(distPill > 0) {
 			inputs.add(1/(float)distPill);
@@ -141,7 +145,7 @@ public class MyPacController extends PacManHijackController{
 			}
 		}
 		if(distJunc <= 0) {
-			inputs.add(0.5f);
+			inputs.add(1f);
 		}
 		if(distJunc > 0) {
 			inputs.add(1/(float)distJunc);
@@ -156,7 +160,7 @@ public class MyPacController extends PacManHijackController{
 			}
 		}		
 		if(distPPill <= 0) {
-			inputs.add(0.5f);
+			inputs.add(1f);
 		}
 		if(distPPill > 0) {
 			inputs.add(1/(float)distPPill);
@@ -178,7 +182,7 @@ public class MyPacController extends PacManHijackController{
 		}
 		int dirPill = (game.getNextPacManDir(game.getTarget(game.getCurPacManLoc(),targetsArray,true,G.DM.PATH),true,Game.DM.PATH));	
 		if(dirPill == game.getCurPacManDir()) {
-			inputs.add(0.5f);
+			inputs.add(1f);
 		}
 		if(dirPill != game.getCurPacManDir()) {
 			inputs.add(0f);
@@ -186,34 +190,34 @@ public class MyPacController extends PacManHijackController{
 		
 		//get pacman neightbors, if its a legal move, 1, otherwise 0
 		int[] legalDirs = game.getPacManNeighbours();
-		if(legalDirs[0] == -1) {
+		if(legalDirs[0] <= 0) {
 			inputs.add(0f);
 		}
-		if(legalDirs[0] > -1) {
-			inputs.add(0.5f);
+		if(legalDirs[0] > 0) {
+			inputs.add(1f);
 		}
-		if(legalDirs[1] == -1) {
+		if(legalDirs[1] <= 0) {
 			inputs.add(0f);
 		}
-		if(legalDirs[1] > -1) {
-			inputs.add(0.5f);
+		if(legalDirs[1] > 0) {
+			inputs.add(1f);
 		}
-		if(legalDirs[2] == -1) {
+		if(legalDirs[2] <= 0) {
 			inputs.add(0f);
 		}
-		if(legalDirs[2] > -1) {
-			inputs.add(0.5f);
+		if(legalDirs[2] > 0) {
+			inputs.add(1f);
 		}
-		if(legalDirs[3] == -1) {
+		if(legalDirs[3] <= 0) {
 			inputs.add(0f);
 		}
-		if(legalDirs[3] > -1) {
-			inputs.add(0.5f);
+		if(legalDirs[3] > 0) {
+			inputs.add(1f);
 		}
 		
 		//If closest ghost is edible
 		if(game.isEdible(closestGhost)) {
-			inputs.add(0.5f);
+			inputs.add(1f);
 		}
 		if(!game.isEdible(closestGhost)) {
 			inputs.add(0f);
