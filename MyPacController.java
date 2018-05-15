@@ -39,6 +39,33 @@ public class MyPacController extends PacManHijackController{
 		//}
 		int highestSpot = -1;
 		float highest = -1;
+		int forward = game.getCurPacManDir();
+		if(forward == 4) {
+			forward--;
+		}
+		int right = 0;
+		int left = 0;
+		int backward = 0;
+		if(forward == Game.UP) {
+			right = Game.RIGHT;
+			left = Game.LEFT;
+			backward = Game.DOWN;
+		}
+		if(forward == Game.RIGHT) {
+			right = Game.DOWN;
+			left = Game.UP;
+			backward = Game.LEFT;
+		}
+		if(forward == Game.LEFT) {
+			right = Game.UP;
+			left = Game.DOWN;
+			backward = Game.RIGHT;
+		}
+		if(forward == Game.DOWN) {
+			right = Game.LEFT;
+			left = Game.RIGHT;
+			backward = Game.UP;
+		}
 		//int[] adj = game.getPacManNeighbours();
 		//Find the highest move
 		for(int i = 0; i < outputs.size(); i++) {
@@ -48,25 +75,25 @@ public class MyPacController extends PacManHijackController{
 			}
 		}
 		if(highestSpot == 0) {
-			pacman.set(Game.UP);
+			pacman.set(forward);
 			if(showDirs) {
 				System.out.println("UP");
 			}
 		}
 		if(highestSpot == 1) {
-			pacman.set(Game.RIGHT);
+			pacman.set(right);
 			if(showDirs) {
 				System.out.println("RIGHT");
 			}
 		}
 		if(highestSpot == 2) {
-			pacman.set(Game.DOWN);
+			pacman.set(left);
 			if(showDirs) {
 				System.out.println("DOWN");
 			}
 		}
 		if(highestSpot == 3) {
-			pacman.set(Game.LEFT);
+			pacman.set(backward);
 			if(showDirs) {
 				System.out.println("LEFT");
 			}
@@ -117,13 +144,15 @@ public class MyPacController extends PacManHijackController{
 		if(distGhost <= 0) {
 			inputs.add(1f);
 		}
-		if(distGhost >= 0) {
+		if(distGhost > 0) {
 			inputs.add(1/(float)distGhost);
 		}
 		
 		//closest pill
+		
 		int distPill = 100000000;
 		int[] pIndex1 = game.getPillIndicesActive();
+		/*
 		for(int i = 0; i < pIndex1.length; i++) {
 			if(game.getPathDistance(game.getCurPacManLoc(), pIndex1[i]) < distPill) {
 				distPill = game.getPathDistance(game.getCurPacManLoc(), pIndex1[i]);
@@ -150,7 +179,7 @@ public class MyPacController extends PacManHijackController{
 		if(distJunc > 0) {
 			inputs.add(1/(float)distJunc);
 		}
-		
+		*/
 		//closest power pill
 		int distPPill = 100000000;
 		int[] ppIndex1 = game.getPillIndicesActive();
@@ -165,13 +194,13 @@ public class MyPacController extends PacManHijackController{
 		if(distPPill > 0) {
 			inputs.add(1/(float)distPPill);
 		}
-		
+		/*
 		//pills collected 0 = 0%, 1 = 100%
 		int numCollec = (game.getNumberPills() + game.getNumberPowerPills()) - (game.getNumActivePills() + game.getNumActivePowerPills());
 		int totalNum = game.getNumberPills() + game.getNumberPowerPills();
 		float percC = ((float)numCollec/(float)totalNum);
 		inputs.add(percC);
-		
+		*/
 		//If pacman is moving towards closest pill
 		int[] targetsArray=new int[pIndex1.length+ppIndex1.length];
 		for(int k=0;k<pIndex1.length;k++) {
@@ -190,28 +219,55 @@ public class MyPacController extends PacManHijackController{
 		
 		//get pacman neightbors, if its a legal move, 1, otherwise 0
 		int[] legalDirs = game.getPacManNeighbours();
-		if(legalDirs[0] <= 0) {
+		int forward = game.getCurPacManDir();
+		if(forward == 4) {
+			forward--;
+		}
+		int right = 0;
+		int left = 0;
+		int backward = 0;
+		if(forward == Game.UP) {
+			right = Game.RIGHT;
+			left = Game.LEFT;
+			backward = Game.DOWN;
+		}
+		if(forward == Game.RIGHT) {
+			right = Game.DOWN;
+			left = Game.UP;
+			backward = Game.LEFT;
+		}
+		if(forward == Game.LEFT) {
+			right = Game.UP;
+			left = Game.DOWN;
+			backward = Game.RIGHT;
+		}
+		if(forward == Game.DOWN) {
+			right = Game.LEFT;
+			left = Game.RIGHT;
+			backward = Game.UP;
+		}
+		if(legalDirs[forward] <= 0) {
 			inputs.add(0f);
 		}
-		if(legalDirs[0] > 0) {
+		if(legalDirs[forward] > 0) {
 			inputs.add(1f);
 		}
-		if(legalDirs[1] <= 0) {
+		if(legalDirs[right] <= 0) {
 			inputs.add(0f);
 		}
-		if(legalDirs[1] > 0) {
+		if(legalDirs[right] > 0) {
 			inputs.add(1f);
 		}
-		if(legalDirs[2] <= 0) {
+		if(legalDirs[left] <= 0) {
 			inputs.add(0f);
 		}
-		if(legalDirs[2] > 0) {
+		if(legalDirs[left] > 0) {
 			inputs.add(1f);
 		}
-		if(legalDirs[3] <= 0) {
+		if(legalDirs[backward] <= 0) {
 			inputs.add(0f);
 		}
-		if(legalDirs[3] > 0) {
+		if(legalDirs[backward] > 0) {
 			inputs.add(1f);
 		}
 		

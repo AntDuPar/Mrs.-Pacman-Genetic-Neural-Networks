@@ -30,7 +30,7 @@ public class GenAlg {
 	
 	static ArrayList<JPanel> frameList = new ArrayList<>();
 	
-	static void doGeneration(int numGen, JFrame frameF, JTextField txtField, boolean doGen) {
+	static void doGeneration(int numGen, JFrame frameF, JTextField txtField, boolean doGen, boolean doReplay) {
 		int secNum = (curGen + numGen);
 		for(int i = 0; i < numGen; i++) {
 			ExecutorService es = Executors.newCachedThreadPool();
@@ -49,7 +49,7 @@ public class GenAlg {
 				    	q = l;
 				    }
 				    public void run() {
-				    	PacManSimulator.simulate(new MyPacController((ne), false), new GameGhosts(4, false), q);
+				    	PacManSimulator.simulate(new MyPacController((ne), false), new GameGhosts(4, false), q, doReplay);
 				    }
 				}
 				stop = false;
@@ -123,16 +123,16 @@ public class GenAlg {
 		//Breed the neural nets
 		for(int i = 0; i < nets.size()/2; i++) {
 			NeuralNet tmpNet1 = new NeuralNet();
-			tmpNet1.numInputs = 11;
+			tmpNet1.numInputs = 8;
 			tmpNet1.numOutputs = 4;
-			tmpNet1.numHiddenLay = 1;
-			tmpNet1.neuronsPerHidden = 5;
+			tmpNet1.numHiddenLay = 2;
+			tmpNet1.neuronsPerHidden = 15;
 			tmpNet1.createNet();
 			NeuralNet tmpNet2= new NeuralNet();
-			tmpNet2.numInputs = 11;
+			tmpNet2.numInputs = 8;
 			tmpNet2.numOutputs = 4;
-			tmpNet2.numHiddenLay = 1;
-			tmpNet2.neuronsPerHidden = 5;
+			tmpNet2.numHiddenLay = 2;
+			tmpNet2.neuronsPerHidden = 15;
 			tmpNet2.createNet();
 			int roulette = rand.nextInt(totalFitness-1)+1;
 			int spot1 = -1;
@@ -160,7 +160,7 @@ public class GenAlg {
 				//Uniform Crossover to make the children
 				for(int l = 0; l < weights1.size(); l++) {
 					float corss = rand.nextFloat();
-					int mutateR = rand.nextInt(10000);
+					int mutateR = rand.nextInt(5000);
 					if(corss >= 0.5) {
 						weights1.set(l, weights2.get(l));
 					}
@@ -225,10 +225,10 @@ public class GenAlg {
 			public void actionPerformed(ActionEvent arg0) {
 				for(int i = 0; i < 100; i++) {
 					NeuralNet tmpNet = new NeuralNet();
-					tmpNet.numInputs = 11;
+					tmpNet.numInputs = 8;
 					tmpNet.numOutputs = 4;
-					tmpNet.numHiddenLay = 1;
-					tmpNet.neuronsPerHidden = 5;
+					tmpNet.numHiddenLay = 2;
+					tmpNet.neuronsPerHidden = 15;
 					tmpNet.createNet();
 					weights.addAll(tmpNet.getWeights());
 					nets.add(tmpNet);
@@ -252,7 +252,7 @@ public class GenAlg {
 				    public MyRunnable() {
 				    }
 				    public void run() {
-				    	doGeneration(1, f, generationNum, true);
+				    	doGeneration(1, f, generationNum, true, false);
 				    }
 				}
 				stop = false;
@@ -273,7 +273,7 @@ public class GenAlg {
 				    public MyRunnable() {
 				    }
 				    public void run() {
-				    	doGeneration(10, f, generationNum, true);
+				    	doGeneration(10, f, generationNum, true, false);
 				    }
 				}
 				stop = false;
@@ -293,7 +293,7 @@ public class GenAlg {
 				    public MyRunnable() {
 				    }
 				    public void run() {
-				    	doGeneration(100, f, generationNum, true);
+				    	doGeneration(100, f, generationNum, true, false);
 				    }
 				}
 				stop = false;
@@ -313,7 +313,7 @@ public class GenAlg {
 				    public MyRunnable() {
 				    }
 				    public void run() {
-				    	doGeneration(50000, f, generationNum, true);
+				    	doGeneration(1000, f, generationNum, true, false);
 				    }
 				}
 				stop = false;
@@ -342,7 +342,7 @@ public class GenAlg {
 				    public MyRunnable() {
 				    }
 				    public void run() {
-				    	doGeneration(1, f, generationNum, false);
+				    	doGeneration(1, f, generationNum, false, true);
 				    }
 				}
 				stop = false;
